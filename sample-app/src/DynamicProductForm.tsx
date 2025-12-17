@@ -8,6 +8,7 @@ import {
   type ProductType,
 } from "./schemas";
 import { getFormConfigByType } from "./utils";
+import { TextInput, NumberInput, TextareaInput, SelectInput } from "./forms";
 
 type Props = {
   productType?: ProductType;
@@ -71,25 +72,50 @@ export const DynamicProductForm: React.FC<Props> = ({
       {config.map((field) => (
         <div key={field.key} className="mb-4">
           <label className="block font-semibold mb-1">{field.label}</label>
-          {field.inputType === "textarea" ? (
-            <textarea
-              {...register(field.key)}
-              className="w-full p-2 border border-gray-300 rounded"
-            />
-          ) : (
-            <input
-              type={field.inputType}
-              {...register(field.key, {
-                valueAsNumber: field.inputType === "number",
-              })}
-              className="w-full p-2 border border-gray-300 rounded"
-            />
-          )}
-          {errors[field.key] && (
-            <div className="text-red-500 text-sm mt-1">
-              {String(errors[field.key]?.message ?? "")}
-            </div>
-          )}
+          {(() => {
+            switch (field.inputType) {
+              case "text":
+                return (
+                  <TextInput
+                    register={register}
+                    errors={errors}
+                    field={field}
+                  />
+                );
+              case "number":
+                return (
+                  <NumberInput
+                    register={register}
+                    errors={errors}
+                    field={field}
+                  />
+                );
+              case "textarea":
+                return (
+                  <TextareaInput
+                    register={register}
+                    errors={errors}
+                    field={field}
+                  />
+                );
+              case "select":
+                return (
+                  <SelectInput
+                    register={register}
+                    errors={errors}
+                    field={field}
+                  />
+                );
+              default:
+                return (
+                  <TextInput
+                    register={register}
+                    errors={errors}
+                    field={field}
+                  />
+                );
+            }
+          })()}
         </div>
       ))}
 
