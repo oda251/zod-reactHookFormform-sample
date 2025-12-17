@@ -15,24 +15,27 @@ type Props = {
 };
 
 const getDefaultValuesForType = (type: ProductType): ProductInput => {
-  if (type === "BOOK") {
-    return {
-      productType: "BOOK",
-      name: "",
-      author: "",
-      price: 0,
-      description: "",
-    };
-  }
-
-  return {
-    productType: "ELECTRONICS",
+  const common = {
     name: "",
-    brand: "",
-    warrantyMonths: 0,
     price: 0,
     description: "",
   };
+
+  switch (type) {
+    case "BOOK":
+      return {
+        ...common,
+        productType: "BOOK",
+        author: "",
+      };
+    default:
+      return {
+        ...common,
+        productType: "ELECTRONICS",
+        brand: "",
+        warrantyMonths: 0,
+      };
+  }
 };
 
 export const DynamicProductForm: React.FC<Props> = ({
