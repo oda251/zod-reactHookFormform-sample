@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -55,6 +55,11 @@ export const DynamicProductForm: React.FC<Props> = ({
     resolver: zodResolver(ProductSchema),
     defaultValues,
   });
+
+  useEffect(() => {
+    reset(defaultValues);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [productType]);
 
   const schema = SchemasByType[productType];
   const config = useMemo(() => getFormConfigByType(schema), [schema]);

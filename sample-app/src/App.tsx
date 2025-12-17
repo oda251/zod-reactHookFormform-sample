@@ -27,7 +27,7 @@ function App() {
         </select>
       </div>
 
-      <DynamicProductForm key={type} productType={type} />
+      <DynamicProductForm productType={type} />
     </div>
   );
 }
