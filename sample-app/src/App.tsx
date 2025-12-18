@@ -1,6 +1,6 @@
 import { useState } from "react";
 import DynamicProductForm from "./forms/DynamicProductForm";
-import { ProductTypes, type ProductType } from "./schemas";
+import { ProductTypes, type ProductType } from "./forms/schemas";
 
 function App() {
   const [type, setType] = useState<ProductType>("BOOK");

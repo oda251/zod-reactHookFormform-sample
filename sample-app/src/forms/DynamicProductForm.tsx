@@ -6,8 +6,8 @@ import {
   type ProductInput,
   SchemasByType,
   type ProductType,
-} from "../schemas";
-import { getFormConfigByType } from "../utils";
+} from "./schemas";
+import { getFormConfigByType } from "./utils";
 import { TextInput, NumberInput, TextareaInput, SelectInput } from "./inputs";
 
 type Props = {
@@ -78,8 +78,7 @@ export const DynamicProductForm: React.FC<Props> = ({
       <input type="hidden" {...register("productType")} />
 
       {config.map((field) => (
-        <div key={field.key} className="mb-4">
-          <label className="block font-semibold mb-1">{field.label}</label>
+        <React.Fragment key={field.key}>
           {(() => {
             switch (field.inputType) {
               case "text":
@@ -124,7 +123,7 @@ export const DynamicProductForm: React.FC<Props> = ({
                 );
             }
           })()}
-        </div>
+        </React.Fragment>
       ))}
 
       <button

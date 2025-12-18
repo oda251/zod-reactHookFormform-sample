@@ -1,7 +1,7 @@
 import React from "react";
 import { type UseFormRegister, type FieldErrors } from "react-hook-form";
-import type { ProductInput } from "../../schemas";
-import type { FieldConfig } from "../../utils";
+import type { ProductInput } from "../schemas";
+import type { FieldConfig } from "../utils";
 
 type Props = {
   register: UseFormRegister<ProductInput>;
@@ -11,7 +11,8 @@ type Props = {
 
 export const TextareaInput: React.FC<Props> = ({ register, errors, field }) => {
   return (
-    <>
+    <div className="mb-4">
+      <label className="block font-semibold mb-1">{field.label}</label>
       <textarea
         {...register(field.key)}
         className="w-full p-2 border border-gray-300 rounded"
@@ -21,6 +22,6 @@ export const TextareaInput: React.FC<Props> = ({ register, errors, field }) => {
           {String(errors[field.key]?.message ?? "")}
         </div>
       )}
-    </>
+    </div>
   );
 };

@@ -1,0 +1,109 @@
+openapi: 3.0.3
+info:
+  title: Product API
+  version: 1.0.0
+paths:
+  /products/upsert:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+  /books/upsert:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Book'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Book'
+  /electronics/upsert:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Electronics'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Electronics'
+components:
+  schemas:
+    Product:
+      type: object
+      discriminator:
+        propertyName: productType
+        mapping:
+          BOOK: '#/components/schemas/Book'
+          ELECTRONICS: '#/components/schemas/Electronics'
+      oneOf:
+        - $ref: '#/components/schemas/Book'
+        - $ref: '#/components/schemas/Electronics'
+
+    Book:
+      type: object
+      required:
+        - productType
+        - name
+        - price
+        - author
+      properties:
+        productType:
+          type: string
+          enum: [BOOK]
+        name:
+          type: string
+          minLength: 1
+        price:
+          type: number
+          minimum: 0
+        description:
+          type: string
+        author:
+          type: string
+          minLength: 1
+
+    Electronics:
+      type: object
+      required:
+        - productType
+        - name
+        - price
+        - brand
+        - warrantyMonths
+      properties:
+        productType:
+          type: string
+          enum: [ELECTRONICS]
+        name:
+          type: string
+          minLength: 1
+        price:
+          type: number
+          minimum: 0
+        description:
+          type: string
+        brand:
+          type: string
+          minLength: 1
+        warrantyMonths:
+          type: number
+          minimum: 0
