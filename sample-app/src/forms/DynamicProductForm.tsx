@@ -7,8 +7,7 @@ import {
   SchemasByType,
   type ProductType,
 } from "./schemas";
-import { getFormConfigByType } from "./utils";
-import { TextInput, NumberInput, TextareaInput, SelectInput } from "./inputs";
+import { TextInput, NumberInput, TextareaInput } from "./inputs";
 
 type Props = {
   productType?: ProductType;
@@ -38,6 +37,18 @@ const getDefaultValuesForType = (type: ProductType): ProductInput => {
   }
 };
 
+const FIELD_INFO: Record<
+  string,
+  { label: string; Component: React.FC<any> }
+> = {
+  name: { label: "商品名", Component: TextInput },
+  price: { label: "価格", Component: NumberInput },
+  description: { label: "説明", Component: TextareaInput },
+  author: { label: "著者名", Component: TextInput },
+  brand: { label: "ブランド", Component: TextInput },
+  warrantyMonths: { label: "保証（月）", Component: NumberInput },
+};
+
 export const DynamicProductForm: React.FC<Props> = ({
   productType = "BOOK",
 }) => {
@@ -62,7 +73,13 @@ export const DynamicProductForm: React.FC<Props> = ({
   }, [productType]);
 
   const schema = SchemasByType[productType];
-  const config = useMemo(() => getFormConfigByType(schema), [schema]);
+  const fieldKeys = useMemo(
+    () =>
+      Object.keys(schema.shape).filter(
+        (key) => key !== "productType"
+      ) as (keyof ProductInput)[],
+    [schema]
+  );
 
   const onSubmit = (data: ProductInput) => {
     console.log("submit", data);
@@ -77,54 +94,20 @@ export const DynamicProductForm: React.FC<Props> = ({
     >
       <input type="hidden" {...register("productType")} />
 
-      {config.map((field) => (
-        <React.Fragment key={field.key}>
-          {(() => {
-            switch (field.inputType) {
-              case "text":
-                return (
-                  <TextInput
-                    register={register}
-                    errors={errors}
-                    field={field}
-                  />
-                );
-              case "number":
-                return (
-                  <NumberInput
-                    register={register}
-                    errors={errors}
-                    field={field}
-                  />
-                );
-              case "textarea":
-                return (
-                  <TextareaInput
-                    register={register}
-                    errors={errors}
-                    field={field}
-                  />
-                );
-              case "select":
-                return (
-                  <SelectInput
-                    register={register}
-                    errors={errors}
-                    field={field}
-                  />
-                );
-              default:
-                return (
-                  <TextInput
-                    register={register}
-                    errors={errors}
-                    field={field}
-                  />
-                );
-            }
-          })()}
-        </React.Fragment>
-      ))}
+      {fieldKeys.map((key) => {
+        const info = FIELD_INFO[key];
+        if (!info) return null;
+        const { label, Component } = info;
+        return (
+          <Component
+            key={key}
+            name={key}
+            label={label}
+            register={register}
+            errors={errors}
+          />
+        );
+      })}
 
       <button
         type="submit"
