@@ -9,10 +9,19 @@ type Props = {
   label: string;
 };
 
-export const NumberInput: React.FC<Props> = ({ register, errors, name, label }) => {
+export const NumberInput: React.FC<Props & { required?: boolean }> = ({
+  register,
+  errors,
+  name,
+  label,
+  required,
+}) => {
   return (
     <div className="mb-4">
-      <label className="block font-semibold mb-1">{label}</label>
+      <label className="block font-semibold mb-1">
+        {label}
+        {required && <span className="text-red-500 ml-1">*</span>}
+      </label>
       <input
         type="number"
         {...register(name, { valueAsNumber: true })}

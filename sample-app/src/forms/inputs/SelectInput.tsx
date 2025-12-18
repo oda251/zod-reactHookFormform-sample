@@ -10,16 +10,20 @@ type Props = {
   options?: { label: string; value: string }[];
 };
 
-export const SelectInput: React.FC<Props> = ({
+export const SelectInput: React.FC<Props & { required?: boolean }> = ({
   register,
   errors,
   name,
   label,
   options = [],
+  required,
 }) => {
   return (
     <div className="mb-4">
-      <label className="block font-semibold mb-1">{label}</label>
+      <label className="block font-semibold mb-1">
+        {label}
+        {required && <span className="text-red-500 ml-1">*</span>}
+      </label>
       <select
         {...register(name)}
         className="w-full p-2 border border-gray-300 rounded"

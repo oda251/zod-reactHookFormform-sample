@@ -37,16 +37,29 @@ const getDefaultValuesForType = (type: ProductType): ProductInput => {
   }
 };
 
-const FIELD_INFO: Record<
-  string,
-  { label: string; Component: React.FC<any> }
-> = {
-  name: { label: "商品名", Component: TextInput },
-  price: { label: "価格", Component: NumberInput },
-  description: { label: "説明", Component: TextareaInput },
-  author: { label: "著者名", Component: TextInput },
-  brand: { label: "ブランド", Component: TextInput },
-  warrantyMonths: { label: "保証（月）", Component: NumberInput },
+const getFieldConfig = (
+  key: string
+): { label: string; Component: React.FC<any> } | null => {
+  switch (key) {
+    case "name":
+      return { label: "商品名", Component: TextInput };
+    case "price":
+      return { label: "価格", Component: NumberInput };
+    case "description":
+      return { label: "説明", Component: TextareaInput };
+    case "author":
+      return { label: "著者名", Component: TextInput };
+    case "brand":
+      return { label: "ブランド", Component: TextInput };
+    case "warrantyMonths":
+      return { label: "保証（月）", Component: NumberInput };
+    case "material":
+      return { label: "素材", Component: TextInput };
+    case "dimensions":
+      return { label: "寸法", Component: TextInput };
+    default:
+      return null;
+  }
 };
 
 export const DynamicProductForm: React.FC<Props> = ({
@@ -77,7 +90,7 @@ export const DynamicProductForm: React.FC<Props> = ({
     () =>
       Object.keys(schema.shape).filter(
         (key) => key !== "productType"
-      ) as (keyof ProductInput)[],
+      ) as string[],
     [schema]
   );
 
@@ -95,16 +108,21 @@ export const DynamicProductForm: React.FC<Props> = ({
       <input type="hidden" {...register("productType")} />
 
       {fieldKeys.map((key) => {
-        const info = FIELD_INFO[key];
-        if (!info) return null;
-        const { label, Component } = info;
+        const config = getFieldConfig(key);
+        if (!config) return null;
+        const { label, Component } = config;
+
+        const fieldSchema = schema.shape[key];
+        const isRequired = !(fieldSchema as any).isOptional();
+
         return (
           <Component
             key={key}
-            name={key}
+            name={key as keyof ProductInput}
             label={label}
             register={register}
             errors={errors}
+            required={isRequired}
           />
         );
       })}
