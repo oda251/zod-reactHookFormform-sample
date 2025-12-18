@@ -1,5 +1,5 @@
 import { useState } from "react";
-import DynamicProductForm from "./DynamicProductForm";
+import DynamicProductForm from "./forms/DynamicProductForm";
 import { ProductTypes, type ProductType } from "./schemas";
 
 function App() {

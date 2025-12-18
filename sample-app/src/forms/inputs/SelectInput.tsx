@@ -1,7 +1,7 @@
 import React from "react";
 import { type UseFormRegister, type FieldErrors } from "react-hook-form";
-import type { ProductInput } from "../schemas";
-import type { FieldConfig } from "../utils";
+import type { ProductInput } from "../../schemas";
+import type { FieldConfig } from "../../utils";
 
 type Props = {
   register: UseFormRegister<ProductInput>;
@@ -9,14 +9,16 @@ type Props = {
   field: FieldConfig;
 };
 
-export const NumberInput: React.FC<Props> = ({ register, errors, field }) => {
+export const SelectInput: React.FC<Props> = ({ register, errors, field }) => {
   return (
     <>
-      <input
-        type="number"
-        {...register(field.key, { valueAsNumber: true })}
+      <select
+        {...register(field.key)}
         className="w-full p-2 border border-gray-300 rounded"
-      />
+      >
+        {/* Options will be added based on field configuration */}
+        <option value="">選択してください</option>
+      </select>
       {errors[field.key] && (
         <div className="text-red-500 text-sm mt-1">
           {String(errors[field.key]?.message ?? "")}

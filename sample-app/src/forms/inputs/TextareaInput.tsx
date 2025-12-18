@@ -1,7 +1,7 @@
 import React from "react";
 import { type UseFormRegister, type FieldErrors } from "react-hook-form";
-import type { ProductInput } from "../schemas";
-import type { FieldConfig } from "../utils";
+import type { ProductInput } from "../../schemas";
+import type { FieldConfig } from "../../utils";
 
 type Props = {
   register: UseFormRegister<ProductInput>;
@@ -9,11 +9,10 @@ type Props = {
   field: FieldConfig;
 };
 
-export const TextInput: React.FC<Props> = ({ register, errors, field }) => {
+export const TextareaInput: React.FC<Props> = ({ register, errors, field }) => {
   return (
     <>
-      <input
-        type="text"
+      <textarea
         {...register(field.key)}
         className="w-full p-2 border border-gray-300 rounded"
       />

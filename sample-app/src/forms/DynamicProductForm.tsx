@@ -6,9 +6,9 @@ import {
   type ProductInput,
   SchemasByType,
   type ProductType,
-} from "./schemas";
-import { getFormConfigByType } from "./utils";
-import { TextInput, NumberInput, TextareaInput, SelectInput } from "./forms";
+} from "../schemas";
+import { getFormConfigByType } from "../utils";
+import { TextInput, NumberInput, TextareaInput, SelectInput } from "./inputs";
 
 type Props = {
   productType?: ProductType;
