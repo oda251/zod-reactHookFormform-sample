@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, type UseFormRegister, type FieldErrors } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import {
   ProductSchema,
   type ProductInput,
@@ -8,9 +9,23 @@ import {
   type ProductType,
 } from "./schemas";
 import { TextInput, NumberInput, TextareaInput } from "./inputs";
+import { isOptionalLike } from "./utils";
 
 type Props = {
   productType?: ProductType;
+};
+
+type BaseFieldProps = {
+  name: keyof ProductInput;
+  label: string;
+  register: UseFormRegister<ProductInput>;
+  errors: FieldErrors<ProductInput>;
+  required?: boolean;
+};
+
+type FieldConfig = {
+  label: string;
+  render: (props: BaseFieldProps) => React.ReactNode;
 };
 
 const getDefaultValuesForType = (type: ProductType): ProductInput => {
@@ -39,24 +54,48 @@ const getDefaultValuesForType = (type: ProductType): ProductInput => {
 
 const getFieldConfig = (
   key: string
-): { label: string; Component: React.FC<any> } | null => {
+): FieldConfig | null => {
   switch (key) {
     case "name":
-      return { label: "商品名", Component: TextInput };
+      return {
+        label: "商品名",
+        render: (props) => <TextInput {...props} />,
+      };
     case "price":
-      return { label: "価格", Component: NumberInput };
+      return {
+        label: "価格",
+        render: (props) => <NumberInput {...props} />,
+      };
     case "description":
-      return { label: "説明", Component: TextareaInput };
+      return {
+        label: "説明",
+        render: (props) => <TextareaInput {...props} />,
+      };
     case "author":
-      return { label: "著者名", Component: TextInput };
+      return {
+        label: "著者名",
+        render: (props) => <TextInput {...props} />,
+      };
     case "brand":
-      return { label: "ブランド", Component: TextInput };
+      return {
+        label: "ブランド",
+        render: (props) => <TextInput {...props} />,
+      };
     case "warrantyMonths":
-      return { label: "保証（月）", Component: NumberInput };
+      return {
+        label: "保証（月）",
+        render: (props) => <NumberInput {...props} />,
+      };
     case "material":
-      return { label: "素材", Component: TextInput };
+      return {
+        label: "素材",
+        render: (props) => <TextInput {...props} />,
+      };
     case "dimensions":
-      return { label: "寸法", Component: TextInput };
+      return {
+        label: "寸法",
+        render: (props) => <TextInput {...props} />,
+      };
     default:
       return null;
   }
@@ -90,7 +129,7 @@ export const DynamicProductForm: React.FC<Props> = ({
     () =>
       Object.keys(schema.shape).filter(
         (key) => key !== "productType"
-      ) as string[],
+      ) as (keyof ProductInput)[],
     [schema]
   );
 
@@ -110,20 +149,21 @@ export const DynamicProductForm: React.FC<Props> = ({
       {fieldKeys.map((key) => {
         const config = getFieldConfig(key);
         if (!config) return null;
-        const { label, Component } = config;
+        const { label, render } = config;
 
-        const fieldSchema = schema.shape[key];
-        const isRequired = !(fieldSchema as any).isOptional();
+        const fieldSchema = schema.shape[key] as z.ZodTypeAny;
+        const isRequired = !isOptionalLike(fieldSchema);
 
         return (
-          <Component
-            key={key}
-            name={key as keyof ProductInput}
-            label={label}
-            register={register}
-            errors={errors}
-            required={isRequired}
-          />
+          <React.Fragment key={key}>
+            {render({
+              name: key,
+              label,
+              register,
+              errors,
+              required: isRequired,
+            })}
+          </React.Fragment>
         );
       })}
 

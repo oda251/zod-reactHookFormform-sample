@@ -3,13 +3,16 @@ import * as Base from "../gen/schemas";
 
 const BaseBook = Base.postBooksUpsertBody;
 const BaseElectronics = Base.postElectronicsUpsertBody;
+// const BaseFurniture = Base.postFurnitureUpsertBody;
 
 export const BookSchema = BaseBook;
 export const ElectronicsSchema = BaseElectronics;
+// export const FurnitureSchema = BaseFurniture;
 
 export const ProductSchema = z.discriminatedUnion("productType", [
   BookSchema,
   ElectronicsSchema,
+  // FurnitureSchema,
 ]);
 
 export type ProductInput = z.infer<typeof ProductSchema>;
